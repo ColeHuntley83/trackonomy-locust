@@ -61,7 +61,6 @@ To set up a cluster and start the tests the following command can be run within 
 ```bash
 docker-compose -f docker-compose-headless.yml up
 ```
-
 This will bring up all the containers - Locust master, slave, tested service - and start logging in the console.
 The logs will represent the order of events: starting the nodes, reading the input data by the master, starting the "feeder" and then requesting new data by the slave and using them to issue POST request:
 

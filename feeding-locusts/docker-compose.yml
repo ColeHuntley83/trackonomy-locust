@@ -9,7 +9,7 @@ services:
      - "5558:5558"
     image: "grubykarol/locust:0.9.0-python3.6-alpine3.9"
     environment:
-      ATTACKED_HOST: http://sut
+      ATTACKED_HOST: https://trk-uniwp-prd-internal.azure-api.net/internal
       LOCUST_MODE: master
       LOCUST_MASTER_BIND_PORT: 5557
       FEEDER_BIND_PORT: 5555
@@ -21,7 +21,7 @@ services:
   slave:
     image: "grubykarol/locust:0.9.0-python3.6-alpine3.9"
     environment:
-      ATTACKED_HOST: http://sut
+      ATTACKED_HOST: https://trk-uniwp-prd-internal.azure-api.net/internal
       LOCUST_MODE: slave
       LOCUST_MASTER: master
       LOCUST_MASTER_BIND_PORT: 5557
@@ -32,6 +32,7 @@ services:
       NO_PROXY: master
     volumes:
       - ./locust-scripts:/locust
+
 
   standalone:
     image: "grubykarol/locust:0.9.0-python3.6-alpine3.9"

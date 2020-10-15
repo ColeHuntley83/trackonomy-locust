@@ -48,7 +48,7 @@ The image uses the following environment variables to configure its behavior:
 
 Basic run, with folder (path in $MY_SCRIPTS) holding `locustfile.py`:
 ```
-docker run --rm --name standalone --hostname standalone -e ATTACKED_HOST=http://standalone:8089 -p 8089:8089 -d -v $MY_SCRIPTS:/locust grubykarol/locust:0.8.1-py3.6
+docker run --rm --name standalone --hostname standalone -e ATTACKED_HOST=http://standalone:8089 -p 8089:8089  -v /Users/colehuntley/Coding/trackonomy/locust-experiments/feeding-locusts/locust-scripts grubykarol/locust:0.8.1-py3.6
 ```
 or, with additional runtime options:
 ```
@@ -64,7 +64,7 @@ docker run --name master --hostname master \
  -v $MY_SCRIPTS:/locust \
  -e ATTACKED_HOST='http://master:8089' \
  -e LOCUST_MODE=master \
- --rm -d grubykarol/locust:0.8.1-py3.6
+ --rm grubykarol/locust:0.8.1-py3.6
 ```
 
 and some slaves:
@@ -117,5 +117,32 @@ docker run --name slave0 `
  -e ATTACKED_HOST=http://master:8089 `
  -e LOCUST_MODE=slave `
  -e LOCUST_MASTER=master `
+ --rm -d grubykarol/locust:0.8.1-py3.6
+```
+
+
+Cole Working standalone script:
+
+`docker run --rm --name standalone --hostname standalone -e ATTACKED_HOST=https://trk-uniwp-prd-internal.azure-api.net/internal -p 8089:8089  -v /Users/colehuntley/Coding/trackonomy/locust-experiments/feeding-locusts/locust-scripts:/locust  grubykarol/locust:0.8.1-py3.6`
+
+
+Cole Working Master Slave Script:
+
+`````docker run --name master --hostname master \
+ -p 8089:8089 -p 5557:5557 -p 5558:5558 \
+  -d -v /Users/colehuntley/Coding/trackonomy/locust-experiments/feeding-locusts/locust-scripts:/locust \
+ -e ATTACKED_HOST='https://trk-uniwp-prd-internal.azure-api.net/internal' \
+ -e LOCUST_MODE=master \
+ --rm grubykarol/locust:0.8.1-py3.6`````
+
+ Run slave:
+```
+docker run --name slave0 \
+ --link master --env NO_PROXY=master \
+ -v /Users/colehuntley/Coding/trackonomy/locust-experiments/feeding-locusts/locust-scripts:/locust \
+ -e ATTACKED_HOST=https://trk-uniwp-prd-internal.azure-api.net/internal \
+ -e LOCUST_MODE=slave \
+ -e LOCUST_MASTER=master \
+ -e LOCUST_MASTER_BIND_PORT=5557 \
  --rm -d grubykarol/locust:0.8.1-py3.6
 ```

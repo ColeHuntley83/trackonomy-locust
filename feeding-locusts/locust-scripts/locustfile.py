@@ -15,7 +15,8 @@ from locust.runners import MasterLocustRunner, SlaveLocustRunner, LocalLocustRun
 FEEDER_HOST = os.getenv("FEEDER_HOST", "127.0.0.1")
 FEEDER_BIND_PORT = os.getenv("FEEDER_BIND_PORT", 5555)
 FEEDER_ADDR = f"tcp://{FEEDER_HOST}:{FEEDER_BIND_PORT}"
-QUIET_MODE = True if os.getenv("QUIET_MODE", "true").lower() in ['1', 'true', 'yes'] else False
+QUIET_MODE = True if os.getenv("QUIET_MODE", "true").lower() in [
+    '1', 'true', 'yes'] else False
 TASK_DELAY = int(os.getenv("TASK_DELAY", "1000"))
 
 DATA_SOURCE_PATH = "data.csv"
@@ -116,12 +117,22 @@ def init_feeder():
 ##################
 # Code for detecting run context
 #
-def is_test_ran_on_master(): return isinstance(runners.locust_runner, MasterLocustRunner)
-def is_test_ran_on_slave(): return isinstance(runners.locust_runner, SlaveLocustRunner)
-def is_test_ran_on_standalone(): return isinstance(runners.locust_runner, LocalLocustRunner)
+def is_test_ran_on_master(): return isinstance(
+    runners.locust_runner, MasterLocustRunner)
+
+
+def is_test_ran_on_slave(): return isinstance(
+    runners.locust_runner, SlaveLocustRunner)
+def is_test_ran_on_standalone(): return isinstance(
+    runners.locust_runner, LocalLocustRunner)
+
+
 def is_locustfile_ran_on_master(): return '--master' in sys.argv
 def is_locustfile_ran_on_slave(): return '--slave' in sys.argv
-def is_locustfile_ran_on_standalone(): return not ('--slave' in sys.argv or '--master' in sys.argv)
+
+
+def is_locustfile_ran_on_standalone(): return not (
+    '--slave' in sys.argv or '--master' in sys.argv)
 
 
 ##################
@@ -160,11 +171,39 @@ class TestBehaviour(TaskSet):
         if data == {}:
             log("Nothing else to do!!!")
         else:
-            log(f"using the following data to make a request {data}")
-            # XXX TODO debugging stuff:
-            mark("received", data)
 
-            self.client.post("/post", json=data)
+            new_data = {
+
+                "config": data
+            }
+            log(f"using the following data to make a request {new_data}")
+            # XXX TODO debugging stuff:
+            mark("received", "hello")
+
+            try:
+                self.client.post("/tapes/config", json=new_data)
+
+                # milestones = {
+                #     1: {},
+                #     2: {},
+                #     3: {}
+                # }
+                for i in range(12):
+                    event_data = {
+                        "eventData": {
+                            "cid": new_data["config"]["tid"],
+                            "ts": "1602310564",
+                            "rid": f"_test{i}EBD618067C89",
+                            "scantype": "5258",
+                            "type": "b827eb3557c8",
+                            "pids": ["66", "A4", "F6", "87", "AC", "39"],
+                            "sTimes": ["1602309674", "1602310560", "1602310434", "1602310354", "1602310448", "1602309674"]
+                        }
+                    }
+                    self.client.post("/events", json=event_data)
+
+            except RuntimeError as e:
+                print("error", e)
 
 
 class TestUser(HttpLocust):

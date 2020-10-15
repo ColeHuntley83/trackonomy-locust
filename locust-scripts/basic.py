@@ -1,15 +1,14 @@
 from locust import HttpLocust, TaskSet, task
 
-
+data = []
 class UserTasks(TaskSet):
 
-    @task
-    def index(self):
-        self.client.get("/")
+   
+        
 
     @task
     def stats(self):
-        self.client.get("/stats/requests")
+        self.client.post("/tyapes/config", json=data)
 
 
 class WebsiteUser(HttpLocust):

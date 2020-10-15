@@ -23,3 +23,9 @@ Some of the things I would like to confirm are:
 This repo holds results of particular experiments.
 
 Much of the staff included here is described here: https://medium.com/locust-io-experiments. 
+
+
+
+
+Cole Working Script:
+```docker run --rm --name standalone --hostname standalone -e ATTACKED_HOST=https://trk-uniwp-prd-internal.azure-api.net/internal -p 8089:8089  -v /Users/colehuntley/Coding/trackonomy/locust-experiments/feeding-locusts/locust-scripts:/locust  grubykarol/locust:0.8.1-py3.6```
