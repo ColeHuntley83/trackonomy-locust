@@ -1,10 +1,10 @@
 const mssql = require("mssql");
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const dbConfig = {
-  server: "svrpriuniwp.database.windows.net",
-  database: "Unilgdb",
-  user: "perfuser",
-  password: "$Supertest8",
+  server: "",
+  database: "",
+  user: "",
+  password: "",
 };
 
 async function getResult() {
