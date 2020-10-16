@@ -5,20 +5,20 @@ services:
     hostname: master
     image: "grubykarol/locust:0.9.0-python3.6-alpine3.9"
     environment:
-      ATTACKED_HOST: http://sut
+      ATTACKED_HOST: https://trk-uniwp-prd-internal.azure-api.net/internal
       LOCUST_MODE: master
       LOCUST_MASTER_BIND_PORT: 5557
       FEEDER_BIND_PORT: 5555
       TASK_DELAY: 100
       QUIET_MODE: "${QUIET_MODE:-false}"
-      LOCUST_OPTS: "--no-web --expect-slaves 1 -c 1 -r 1 -t 10s"
+      
     volumes:
       - ./locust-scripts:/locust
 
   slave:
     image: "grubykarol/locust:0.9.0-python3.6-alpine3.9"
     environment:
-      ATTACKED_HOST: http://sut
+      ATTACKED_HOST: https://trk-uniwp-prd-internal.azure-api.net/internal
       LOCUST_MODE: slave
       LOCUST_MASTER: master
       LOCUST_MASTER_BIND_PORT: 5557
@@ -26,7 +26,7 @@ services:
       FEEDER_BIND_PORT: 5555
       TASK_DELAY: 100
       QUIET_MODE: "${QUIET_MODE:-false}"
-      LOCUST_OPTS: "--no-web"
+      LOCUST_OPTS: ""
       NO_PROXY: master
     volumes:
       - ./locust-scripts:/locust
@@ -35,19 +35,21 @@ services:
     image: "grubykarol/locust:0.9.0-python3.6-alpine3.9"
     container_name: standalone
     hostname: standalone
+    ports:
+      - "8189:8189"
     environment:
-      ATTACKED_HOST: http://sut
+      ATTACKED_HOST: https://trk-uniwp-prd-internal.azure-api.net/internal
       LOCUST_MODE: standalone
       FEEDER_HOST: standalone
       FEEDER_BIND_PORT: 5555
       TASK_DELAY: 100
       QUIET_MODE: "${QUIET_MODE:-false}"
-      LOCUST_OPTS: "--no-web -c 10 -r 10 -t 10s"
+      LOCUST_OPTS: "--web-port 8189"
+      
       NO_PROXY: standalone
     volumes:
       - ./locust-scripts:/locust
 
-  # test endpoint
   httpbin:
     image: "kennethreitz/httpbin"
     container_name: httpbin

@@ -1,2 +1,3 @@
 id,tid,qrcode,barcode,facility,sdate,activdate,linkdate,devstatus,ttype,tperson,apn
-1,"_testFBEB4851B953","04-161219-C17934","420115761353","NJLGN","2/7/2020, 4:19:49 PM","06/02/2020 10:00:00","2/7/2020, 4:19:55 PM","1","White","Parcel","felipe"
+1,"_testFBEB4851B953","04-161219-C17934","420115761353","NJLGN","2/7/2020, 4:19:49 PM","06/02/2020 10:00:00","2/7/2020, 4:19:55 PM","1","White","Parcel","felipe",
+2,"_testFBEB4851B953","04-161219-C17934","420115761353","NJLGN","2/7/2020, 4:19:49 PM","06/02/2020 10:00:00","2/7/2020, 4:19:55 PM","1","White","Parcel","felipe"

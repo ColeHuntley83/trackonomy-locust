@@ -8,6 +8,7 @@ import gevent
 import zmq
 from locust import TaskSet, task, HttpLocust, events, runners
 from locust.runners import MasterLocustRunner, SlaveLocustRunner, LocalLocustRunner
+from urllib.error import HTTPError
 
 ##################
 # Reading environment variables and setting up constants
@@ -82,6 +83,12 @@ class ZMQFeeder:
         :param address: indicates interface and port to bind to (see: http://api.zeromq.org/2-1:zmq-tcp#toc6);
                         defaults to "tcp://127.0.0.1:5555"
         """
+        # generate some random tape data
+
+        # resulting data list = [{} *100000]
+
+
+
         self.data_queue = queue.Queue()
         [self.data_queue.put(i) for i in data]
 
@@ -106,10 +113,11 @@ class ZMQFeeder:
                     log("Queue empty. We need to reply something...")
                     self.socket.send_json({})
             # yield
-            time.sleep(0)
+            time.sleep(2)
 
 
 def init_feeder():
+    
     sender = ZMQFeeder(INPUT_DATA, f"tcp://0.0.0.0:{FEEDER_BIND_PORT}")
     sender.run()
 
@@ -157,6 +165,8 @@ if is_locustfile_ran_on_master() or is_locustfile_ran_on_standalone():
 
 
 class TestBehaviour(TaskSet):
+    min_wait = 200
+    max_wait = TASK_DELAY
     def on_start(self):
         self.zmq_consumer = ZMQRequester(FEEDER_ADDR)
 
@@ -183,11 +193,10 @@ class TestBehaviour(TaskSet):
             try:
                 self.client.post("/tapes/config", json=new_data)
 
-                # milestones = {
-                #     1: {},
-                #     2: {},
-                #     3: {}
-                # }
+            except HTTPError as e:
+                print("error", e)
+
+            try:
                 for i in range(12):
                     event_data = {
                         "eventData": {
@@ -202,8 +211,14 @@ class TestBehaviour(TaskSet):
                     }
                     self.client.post("/events", json=event_data)
 
-            except RuntimeError as e:
+            except HTTPError as e:
                 print("error", e)
+
+                # milestones = {
+                #     1: {},
+                #     2: {},
+                #     3: {}
+                # }
 
 
 class TestUser(HttpLocust):
@@ -211,7 +226,7 @@ class TestUser(HttpLocust):
     Locust user class that uses external data to feed the locust
     """
     task_set = TestBehaviour
-    min_wait = TASK_DELAY
+    min_wait = 200
     max_wait = TASK_DELAY
 
 

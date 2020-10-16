@@ -13,7 +13,7 @@ services:
       LOCUST_MODE: master
       LOCUST_MASTER_BIND_PORT: 5557
       FEEDER_BIND_PORT: 5555
-      TASK_DELAY: 10
+      TASK_DELAY: 5000
       QUIET_MODE: "${QUIET_MODE:-false}"
     volumes:
       - ./locust-scripts:/locust
@@ -27,7 +27,7 @@ services:
       LOCUST_MASTER_BIND_PORT: 5557
       FEEDER_HOST: master
       FEEDER_BIND_PORT: 5555
-      TASK_DELAY: 10
+      TASK_DELAY: 300
       QUIET_MODE: "${QUIET_MODE:-false}"
       NO_PROXY: master
     volumes:
